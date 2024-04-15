@@ -13,6 +13,7 @@ router.get('/profile', auth.extractToken, auth.verifyToken, userController.getPr
 // router.post('/userpasswordChnage',userController.userpasswordForget);
 router.post('/upload', upload.single('file'), userController.handleFormData)
 router.post('/upload-url', userController.handleUploadUrl);
+router.post('/forget-password', userController.forgetpassword);
 
 
 

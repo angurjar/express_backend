@@ -1,6 +1,7 @@
 const bcrypt = require("bcrypt");
 const User = require("./model");
 const auth = require("../auth/auth");
+const {transporter}=require('../config/config.js')
 
 const multer = require("multer");
 const { createPresignedUrl } = require("../utils/s3");
@@ -8,14 +9,18 @@ const { createPresignedUrl } = require("../utils/s3");
 
 exports.register = async (req, res) => {
   try {
-    const { id, username, password, memberid, user_code } = req.body;
+    const { id, username, password, memberid, user_code,files,image_attached,email } = req.body;
 
     if (
-      id === null &&
-      username === null &&
-      password === null &&
-      memberid === null &&
-      user_code === null
+      id === undefined &&
+      username === undefined &&
+      password === undefined &&
+      memberid === undefined &&
+      user_code === undefined &&
+      files===undefined &&
+      image_attached===undefined &&
+      email===undefined 
+    
     ) {
       console.log(
         "All data is null:",
@@ -23,7 +28,10 @@ exports.register = async (req, res) => {
         username,
         password,
         memberid,
-        user_code
+        user_code,
+        files,
+        image_attached,
+        email
       );
     }
 
@@ -33,6 +41,8 @@ exports.register = async (req, res) => {
       password: await bcrypt.hash(password, 3),
       memberid,
       user_code,
+      files,
+      email,
     });
 
     res.status(201).json({ message: "User registered successfully", user });
@@ -84,26 +94,6 @@ exports.getProfile = async (req, res) => {
   console.log("user is  find");
 };
 
-
-  
-
-// exports.cloudinary = async (localpath) => {
-//   try {
-//     if (!localpath) {
-//       return res.status(404).json({ message: "not found" });
-//       const reposnse = await cloudinary.uploader.upload("loacalfilepath", {
-//         resourcetype: "auto",
-//       });
-//       console.log("file upload", response.url);
-//       return reposnse;
-//     }
-//   } catch (error) {
-//     FileSystem.unlinksync(localpath);
-//     console.log(error);
-//   }
-// };
-
-
 exports.handleFormData = async (req, res) => {
   try {
     console.log(req.file);
@@ -123,3 +113,40 @@ exports.handleUploadUrl = async (req, res) => {
     res.status(500).json({ message: "Server error" });
   }
 };
+
+exports.forgetpassword=async(req,res)=>{
+  const { email } = req.body;
+  console.log(email)
+try {
+
+  
+  
+    if (!email) {
+      console.log()
+      return res.status(400).json({ msg: "Email is required" });
+    }
+  
+    const user = await User.findOne({ where: { email } });
+  console.log(user)
+    if (!user) {
+      return res.status(401).json({ msg: "Unauthorized" });
+    }
+   
+   
+  
+  
+  
+    const info = await transporter.sendMail({
+      from: process.env.sender_email,
+      to: email, // Use the provided email here instead of hardcoding
+      subject: "Password reset link ✔",
+      text: "Here is your password reset link", // Provide the actual password reset link here
+      html: "<b>Hello world?</b>",
+    });
+  
+    res.status(200).json({ msg: "Password reset email sent successfully" });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ msg: "Internal server error" }); // Use status code 500 for internal server errors
+  }
+}
