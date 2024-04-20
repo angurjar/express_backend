@@ -5,9 +5,10 @@ const sequelize = require("../../db");
 
 const User = sequelize.define("Users", {
   id: {
-    type: DataTypes.INTEGER,
+    type: DataTypes.SMALLINT,
     allowNull: false,
     primaryKey: true,
+    autoIncrement: true,
   },
   username: {
     type: DataTypes.STRING,
@@ -19,11 +20,11 @@ const User = sequelize.define("Users", {
   },
   memberid: {
     type: DataTypes.INTEGER,
-    allowNull: false,
+    allowNull: true,
   },
   user_code: {
     type: DataTypes.SMALLINT,
-    allowNull: false,
+    allowNull: true,
   },
   files: {
     type: DataTypes.STRING,

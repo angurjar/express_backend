@@ -4,7 +4,7 @@ var cors = require('cors')
 // const client =require('./redis/index')
 const router=require('./user/routes')
 const app = express();
-const port = 3000;
+const port = 3001;
 app.use(express.urlencoded({'extended':true}))
 app.use(express.json())
 app.use(cors())

@@ -1,7 +1,7 @@
 const bcrypt = require("bcrypt");
 const User = require("./model");
 const auth = require("../auth/auth");
-const {transporter}=require('../config/config.js')
+const { transporter } = require("../config/config.js");
 
 const multer = require("multer");
 const { createPresignedUrl } = require("../utils/s3");
@@ -9,7 +9,16 @@ const { createPresignedUrl } = require("../utils/s3");
 
 exports.register = async (req, res) => {
   try {
-    const { id, username, password, memberid, user_code,files,image_attached,email } = req.body;
+    const {
+      id,
+      username,
+      password,
+      memberid,
+      user_code,
+      files,
+      image_attached,
+      email,
+    } = req.body;
 
     if (
       id === undefined &&
@@ -17,10 +26,9 @@ exports.register = async (req, res) => {
       password === undefined &&
       memberid === undefined &&
       user_code === undefined &&
-      files===undefined &&
-      image_attached===undefined &&
-      email===undefined 
-    
+      files === undefined &&
+      image_attached === undefined &&
+      email === undefined
     ) {
       console.log(
         "All data is null:",
@@ -35,17 +43,26 @@ exports.register = async (req, res) => {
       );
     }
 
+    const hashedPassword = await bcrypt.hash(password, 10); // Hash the password
     const user = await User.create({
       id,
       username,
-      password: await bcrypt.hash(password, 3),
+      password: hashedPassword, // Use hashed password
       memberid,
       user_code,
       files,
       email,
     });
 
-    res.status(201).json({ message: "User registered successfully", user });
+    auth.generateToken({ id: user.id }, (err, token) => {
+      if (err) {
+        console.error("Error:", err);
+        res.json({ message: "Something went wrong", token });
+      } else {
+        console.log("Generated token:", token);
+        res.json({ message: "register successful", token });
+      }
+    });
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: "Server error" });
@@ -97,7 +114,7 @@ exports.getProfile = async (req, res) => {
 exports.handleFormData = async (req, res) => {
   try {
     console.log(req.file);
-    res.status(201).json({message: 'Uploaded'})
+    res.status(201).json({ message: "Uploaded" });
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: "Server error" });
@@ -114,28 +131,20 @@ exports.handleUploadUrl = async (req, res) => {
   }
 };
 
-exports.forgetpassword=async(req,res)=>{
+exports.forgetpassword = async (req, res) => {
   const { email } = req.body;
-  console.log(email)
-try {
-
-  
-  
+  console.log(email);
+  try {
     if (!email) {
-      console.log()
+      console.log();
       return res.status(400).json({ msg: "Email is required" });
     }
-  
+
     const user = await User.findOne({ where: { email } });
-  console.log(user)
+    console.log(user);
     if (!user) {
       return res.status(401).json({ msg: "Unauthorized" });
     }
-   
-   
-  
-  
-  
     const info = await transporter.sendMail({
       from: process.env.sender_email,
       to: email, // Use the provided email here instead of hardcoding
@@ -143,10 +152,26 @@ try {
       text: "Here is your password reset link", // Provide the actual password reset link here
       html: "<b>Hello world?</b>",
     });
-  
+
     res.status(200).json({ msg: "Password reset email sent successfully" });
   } catch (error) {
     console.error(error);
     res.status(500).json({ msg: "Internal server error" }); // Use status code 500 for internal server errors
   }
-}
+};
+
+exports.userList = async (req, res) => {
+  const { id } = req.params;
+  console.log(id);
+
+  const data = await User.findAll({});
+  try {
+    if (!data) {
+      res.status(404).json({ msg: "data is not found" });
+    } else {
+      res.status(200).json({ msg: "data is  found", data });
+    }
+  } catch (err) {
+    console.log(err);
+  }
+};

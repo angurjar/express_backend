@@ -1,12 +1,13 @@
 const nodemailer = require("nodemailer");
+const SendmailTransport = require('nodemailer/lib/sendmail-transport');
 exports.transporter = nodemailer.createTransport({
-  host: "smtp.gmail.com",
-  port: 587,
-  secure: false, // Use `true` for port 465, `false` for all other ports
+  
+
+
+
+  service: "gmail",
   auth: {
     user: process.env.user,
     pass: process.env.pass,
   },
-
-
-})
+});

@@ -1,22 +1,24 @@
-
-const express = require('express');
+const express = require("express");
 const router = express.Router();
-const auth=require('../auth/auth')
-const { upload } = require('../middlware/upload')
+const auth = require("../auth/auth");
+const { upload } = require("../middlware/upload");
 
+const userController = require("./controller");
+const { validate } = require("../middlware/validator");
+const { registerSchema, loginSchema } = require("../validation/schema");
 
-const userController = require('./controller');
-
-router.post('/register', userController.register);
-router.post('/login', userController.login);
-router.get('/profile', auth.extractToken, auth.verifyToken, userController.getProfile);
+router.post("/register", validate(registerSchema), userController.register);
+router.post("/login", validate(loginSchema), userController.login);
+router.get(
+  "/profile",
+  auth.extractToken,
+  auth.verifyToken,
+  userController.getProfile
+);
 // router.post('/userpasswordChnage',userController.userpasswordForget);
-router.post('/upload', upload.single('file'), userController.handleFormData)
-router.post('/upload-url', userController.handleUploadUrl);
-router.post('/forget-password', userController.forgetpassword);
-
-
+router.post("/upload", upload.single("file"), userController.handleFormData);
+router.post("/upload-url", userController.handleUploadUrl);
+router.post("/forget-password", userController.forgetpassword);
+router.get("/", userController.userList);
 
 module.exports = router;
-
-
