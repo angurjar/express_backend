@@ -23,4 +23,6 @@ router.get("/", userController.userList);
 router.post("/delete", userController.userdelete);
 router.post("/update", userController.userupdate);
 
+router.get("/password/redirect", userController.resetPasswordRedirect);
+
 module.exports = router;

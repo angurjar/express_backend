@@ -145,12 +145,13 @@ exports.forgetpassword = async (req, res) => {
     if (!user) {
       return res.status(401).json({ msg: "Unauthorized" });
     }
+    const link = `http://localhost:3001/api/v1/user/password/redirect?id=${user.id}`;
     const info = await transporter.sendMail({
       from: process.env.sender_email,
       to: email, // Use the provided email here instead of hardcoding
       subject: "Password reset link ✔",
       text: "Here is your password reset link", // Provide the actual password reset link here
-      html: "<b>Hello world?</b>",
+      html: `<b>Hello world?</b> <a href="${link}">${link}</a>`,
     });
 
     res.status(200).json({ msg: "Password reset email sent successfully" });
@@ -204,4 +205,10 @@ exports.userupdate = async (req, res) => {
   } catch (error) {
     console.log(error);
   }
+};
+
+exports.resetPasswordRedirect = async (req, res) => {
+  const id = req.query.id;
+  // either send this id to react or generate a token then send that to react
+  res.redirect(`http://localhost:3000/password/reset?id=${id}`);
 };
