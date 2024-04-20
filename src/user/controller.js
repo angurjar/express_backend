@@ -175,3 +175,33 @@ exports.userList = async (req, res) => {
     console.log(err);
   }
 };
+
+exports.userdelete = async (req, res) => {
+  const id = req.body.id;
+  try {
+    const count = await User.destroy({ where: { id } });
+    if (count === 0) {
+      return res.status(400).json({ msg: "user not found " });
+    }
+    res.status(200).json({ msg: "user delete successfully" });
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+exports.userupdate = async (req, res) => {
+  const { id, email, username, password } = req.body;
+
+  try {
+    const [count] = await User.update(
+      { email, username, password },
+      { where: { id } }
+    );
+    if (!count) {
+      return res.status(400).json({ msg: "user is not update succesfully" });
+    }
+    return res.status(400).json({ msg: "user updated succesfully" });
+  } catch (error) {
+    console.log(error);
+  }
+};

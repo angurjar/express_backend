@@ -20,5 +20,7 @@ router.post("/upload", upload.single("file"), userController.handleFormData);
 router.post("/upload-url", userController.handleUploadUrl);
 router.post("/forget-password", userController.forgetpassword);
 router.get("/", userController.userList);
+router.post("/delete", userController.userdelete);
+router.post("/update", userController.userupdate);
 
 module.exports = router;
