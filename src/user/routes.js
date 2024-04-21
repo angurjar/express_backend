@@ -7,21 +7,22 @@ const userController = require("./controller");
 const { validate } = require("../middlware/validator");
 const { registerSchema, loginSchema } = require("../validation/schema");
 
-router.post("/register", validate(registerSchema), userController.register);
+router.post("/users", validate(registerSchema), userController.register);
 router.post("/login", validate(loginSchema), userController.login);
 router.get(
-  "/profile",
+  "/users/:userId/",
   auth.extractToken,
   auth.verifyToken,
-  userController.getProfile
+  userController.getProfiles
 );
 // router.post('/userpasswordChnage',userController.userpasswordForget);
 router.post("/upload", upload.single("file"), userController.handleFormData);
 router.post("/upload-url", userController.handleUploadUrl);
 router.post("/forget-password", userController.forgetpassword);
-router.get("/", userController.userList);
-router.post("/delete", userController.userdelete);
-router.post("/update", userController.userupdate);
+router.get("/users", userController.userList);
+router.delete("/users/userId", userController.userdelete);
+router.patch("/users/:userId", userController.userupdate);
+router.put("/users/userId", userController.userupdate);
 
 router.get("/password/redirect", userController.resetPasswordRedirect);
 
