@@ -1,6 +1,6 @@
-const multer=require('multer')
+ import multer from 'multer'
 
 
 
-exports.upload = multer({ dest: 'uploads/' })
+export const upload = multer({ dest: 'uploads/' })
  

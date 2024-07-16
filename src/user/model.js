@@ -1,46 +1,34 @@
-// models/User.js
+import mongoose ,{Schema} from 'mongoose';
 
-const { DataTypes } = require("sequelize");
-const sequelize = require("../../db");
-
-const User = sequelize.define("Users", {
-  id: {
-    type: DataTypes.SMALLINT,
-    allowNull: false,
-    primaryKey: true,
-    autoIncrement: true,
-  },
+const userSchema = new Schema({
   username: {
-    type: DataTypes.STRING,
-    allowNull: false,
+    type: String,
+    required: true,
   },
   password: {
-    type: DataTypes.STRING,
-    allowNull: false,
+    type: String,
+    required: true,
   },
   memberid: {
-    type: DataTypes.INTEGER,
-    allowNull: true,
+    type: Number,
+    default: null,
   },
   user_code: {
-    type: DataTypes.SMALLINT,
-    allowNull: true,
+    type: Number,
+    default: null,
   },
   files: {
-    type: DataTypes.STRING,
-    allowNull: true,
+    type: String,
+    default: null,
   },
   image_attached: {
-    type: DataTypes.STRING,
-    allowNull: true,
+    type: String,
+    default: null,
   },
   email: {
-    type: DataTypes.STRING,
-    allowNull: false,
+    type: String,
+    required: true,
   },
 });
 
-(async () => {
-  await sequelize.sync({ force: false });
-})();
-module.exports = User;
+export const User = mongoose.model('User', userSchema)

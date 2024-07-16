@@ -1,8 +1,8 @@
-const express = require('express');
-const db =require('../db')
-var cors = require('cors')
+import  express from'express' 
+import  {connectDB}   from  '../db.js'
+ import cors from 'cors'
 // const client =require('./redis/index')
-const router=require('./user/routes')
+import  {router} from './user/routes.js'
 const app = express();
 const port = 3001;
 app.use(express.urlencoded({'extended':true}))
@@ -31,6 +31,9 @@ app.get('/', (req, res) => {
 //  }
 
 // });
+
+
+connectDB()
 app.use('/api/v1/user',router);
 
 app.listen(port, () => {

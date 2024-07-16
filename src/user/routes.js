@@ -1,29 +1,28 @@
-const express = require("express");
-const router = express.Router();
-const auth = require("../auth/auth");
-const { upload } = require("../middlware/upload");
+import Router from "express"
+export const router = Router();
+import * as auth from '../auth/auth.js'
+import {upload} from '../middlware/upload.js';
+import * as userController from './controller.js';
+import {validate} from '../middlware/validator.js';
+// import registerSchema from '../validation/schema'
 
-const userController = require("./controller");
-const { validate } = require("../middlware/validator");
-const { registerSchema, loginSchema } = require("../validation/schema");
-
-router.post("/users", validate(registerSchema), userController.register);
-router.post("/login", validate(loginSchema), userController.login);
+router.post("/register",  userController.register);
+router.post("/login",  userController.login);
 router.get(
   "/users/:userId/",
   auth.extractToken,
   auth.verifyToken,
-  userController.getProfiles
+  userController.getProfile
 );
-// router.post('/userpasswordChnage',userController.userpasswordForget);
-router.post("/upload", upload.single("file"), userController.handleFormData);
-router.post("/upload-url", userController.handleUploadUrl);
-router.post("/forget-password", userController.forgetpassword);
-router.get("/users", userController.userList);
-router.delete("/users/userId", userController.userdelete);
-router.patch("/users/:userId", userController.userupdate);
-router.put("/users/userId", userController.userupdate);
+// router.post('/userpasswordChnage', userController.forgetpassword);
+// router.post("/upload", upload.single("file"), userController.handleFormData);
+// router.post("/upload-url", userController.handleUploadUrl);
+// router.post("/forget-password", userController.forgetpassword);
+// router.get("/users", userController.userList);
+// router.delete("/users/userId", userController.userdelete);
+// router.patch("/users/:userId", userController.userupdate);
+// router.put("/users/userId", userController.userupdate);
 
-router.get("/password/redirect", userController.resetPasswordRedirect);
+// router.get("/password/redirect", userController.resetPasswordRedirect);
 
-module.exports = router;
+

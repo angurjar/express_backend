@@ -1,6 +1,6 @@
-const joi = require("joi");
+import joi from "joi";
 
-exports.userData = joi.object({
+export const userData = joi.object({
   username: joi.string().alphanum().min(3).max(30).required(),
   password: joi.string().max(30).min(6).required(),
   email: joi
@@ -8,7 +8,7 @@ exports.userData = joi.object({
     .email({ minDomainSegments: 2, tlds: { allow: ["com", "net"] } }),
 });
 
-exports.registerSchema = joi.object({
+export const registerSchema = joi.object({
   username: joi.string().alphanum().min(3).max(30).required(),
   password: joi.string().max(30).min(6).required(),
   email: joi
@@ -17,7 +17,7 @@ exports.registerSchema = joi.object({
     .required(),
 });
 
-exports.loginSchema = joi.object({
+export const loginSchema = joi.object({
   username: joi.string().alphanum().min(3).max(30).required(),
   password: joi.string().max(30).min(6).required(),
 });

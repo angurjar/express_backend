@@ -1,30 +1,17 @@
+// db.js
+import mongoose from 'mongoose';
 
-const { Sequelize } = require('sequelize');
+export const connectDB = async () => {
+  try {
+    await mongoose.connect('mongodb+srv://anjali755577:eaPey2zKRgntZMSF@cluster0.dlzzf3g.mongodb.net/', {
+      
+      
+    });
+    console.log('MongoDB connected');
+  } catch (err) {
+    console.error('MongoDB connection error:', err);
+    process.exit(1);
+  }
+};
 
-
-// Sequelize connection
- const sequelize = new Sequelize({host: 'localhost',
- port: 5433,
- username: 'postgres',
- password: 'Annu@1998',
- database: 'library_management_system',
- dialect:'postgres'});
-
-
-sequelize
-  .authenticate()
-  .then(() => {
-    console.log('Database connection has been established successfully.');
-  })
-  .catch(err => {
-    console.error('Unable to connect to the database:', err);
-  });
-
-  // sequelize.query('Select my_func($id)', {
-  //   bind: {
-  //     id: 123
-  //   }
-  // })
-
-  module.exports =  sequelize
 
